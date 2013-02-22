@@ -56,6 +56,57 @@ def sys_hostname():
 		    name=socket.gethostbyaddr(socket.gethostname())[0]
 		    return name
 
-z_info = z_log_info('jmp.properties')
+
+def jmp_info(name):
+        datafile = file(name)
+        z_data = {}
+        for line in datafile:
+            if "#" in line:
+                print line
+                continue
+            elif "jmpEnabled" in line:
+                line = line.strip('\n')
+                line = line.split("jmpEnabled=")
+                print line
+                z_data['jmpEnabled'] = line[1]
+            elif "username" in line:
+                line = line.strip('\n')
+                line = line.split("username=")
+                z_data['username'] = line[1]
+            elif "password=" in line:
+                line = line.strip('\n')
+                line = line.split("password=")
+                z_data['password'] = line[1]
+            elif "jsb_z_agent_conf" in line:
+                line = line.strip('\n')
+                line = line.split("jsb_z_agent_conf=")
+                z_data['jsb_z_agent_conf'] = line[1]
+            elif "jta_z_agent_conf" in line:
+                line = line.strip('\n')
+                line = line.split("jta_z_agent_conf=")
+                z_data['jta_z_agent_conf'] = line[1]
+            elif "jmp_template" in line:
+                line = line.strip('\n')
+                line = line.split("jmp_template=")
+                z_data['jmp_template'] = line[1]
+            elif "jasper_home" in line:
+                line = line.strip('\n')
+                line = line.split("jasper_home=")
+                z_data['jasper_home'] = line[1]
+            elif "jsb.jmxremote" in line:
+                line = line.strip('\n')
+                line = line.split("jsb.jmxremote=")
+                z_data['jsb.jmxremote'] = line[1]
+            elif "jsbHostGroup" in line:
+                line = line.strip('\n')
+                line = line.split("jsbHostGroup=")
+                z_data['jsbHostGroup'] = line[1]
+            elif "jtaHostGroup" in line:
+                line = line.strip('\n')
+                line = line.split("jtaHostGroup=")
+                z_data['jtaHostGroup'] = line[1]
+        return z_data
+#####################End#############################
+z_info = jmp_info('jmp.properties')
 print z_info
 
