@@ -108,13 +108,16 @@ def z_logging():
         zabbix_info = {}
         zagent_info = {}
         zabbix_info = jmp_info('jmp.properties')
-        print zabbix_info
+        #print zabbix_info
+        logging.debug(zabbix_info)
         zagent_info = z_info(zabbix_info['jsb_z_agent_conf'])
-        print zagent_info
+        #print zagent_info
+        logging.debug(zagent_info)
         zabbix_server_username=zabbix_info['username']
         zabbix_server_password=zabbix_info['password']
         zabbix_server_url='http://'+ zagent_info['Server'] + '/zabbix'
-        print zabbix_server_url
+        #print zabbix_server_url
+        logging.debug(zabbix_server_url)
         z=zabbix_api.ZabbixAPI(server=zabbix_server_url)
         z.login(user=zabbix_server_username, password=zabbix_server_password)
         return z
@@ -134,10 +137,10 @@ def z_checkHostgroup(zabbix_handler, hostGroupName):
         for item in hostgroup:
                 if hostGroupName:
                     print "JasperServers exist"
-                    #print item
                     return True
                 else:
-                    print "JasperServer hostgroup is not there, talk to your system Administrator"
+                    #print "JasperServer hostgroup is not there, talk to your system Administrator"
+                    logging.debug("JasperServer hostgroup is not there, talk to your system Administrator")
                     return False
 #####################End#############################
 #####################################################
@@ -188,8 +191,8 @@ def get_jasper_groupid(zabbix_handler,groupName):
             else:
                 continue    
         print "can't find JasperServers Group"
-        logging.error('Cannot find JasperServers Group please check your Zabbix installation')
-        logging.error('#####################################################################')
+        logging.debug('Cannot find JasperServers Group please check your Zabbix installation')
+        logging.debug('#####################################################################')
         return 0
 #####################End#############################
 #####################################################
@@ -217,7 +220,7 @@ def get_jasperhosts(zabbix_handler,hostsgroupID):
 #####################################################
 #  Function retrive the host interface info for JTA #
 # input:  Zabbix Handle , HostGroupName             #
-# output:  GroupID                                  #
+# output:  Interface object                         #
 ##################################################### 
 def get_hostinterface(zabbix_handler,hostsgroupID):
         hosts = zabbix_handler.host.get(
@@ -237,10 +240,12 @@ def get_hostinterface(zabbix_handler,hostsgroupID):
         #logging.debug('#####################################################')
         #logging.debug(jta_apps_hosts)
         return interface
+#####################End#############################
 #####################################################
-#  Function retrive the host interface info for JTA #
-# input:  Zabbix Handle , HostGroupName             #
-# output:  GroupID                                  #
+#  Function retrive the host interface info for     #
+#  any host                                         #
+# input:  Zabbix Handle , HostID                    #
+# output:  interface object                         #
 ##################################################### 
 def get_interface(zabbix_handler,hostID):
         interface = zabbix_handler.hostinterface.get(
@@ -251,7 +256,53 @@ def get_interface(zabbix_handler,hostID):
         #logging.debug('#####################################################')
         #logging.debug(jta_apps_hosts)
         return interface
-
+#####################End#############################
+#####################################################
+#  Function retrive the Application ID for JTA-Logs #
+#  any host                                         #
+# input:  Zabbix Handle , HostID                    #
+# output:  interface object                         #
+##################################################### 
+def get_jta_log_applicaitonID(zabbix_handler,HostID):
+        applicaitonID = zabbix_handler.application.get(
+        {
+        'hostids':HostID,
+        'filter': { 'name': 'JTA-Logs'}, 
+        'output': 'extend'
+        })
+        #print"######applicaiton id##############"
+        #print applicaitonID
+        #print applicaitonID[0]['applicationid']
+        logging.debug("######applicaiton id##############")
+        logging.debug(applicaitonID)
+        logging.debug(applicaitonID[0]['applicationid'])
+        return applicaitonID[0]['applicationid']
+#####################End#############################
+#####################################################
+#  Function retrive the Application ID for JTA-Logs #
+#  any host                                         #
+# input:  Zabbix Handle , HostID                    #
+# output:  interface object                         #
+##################################################### 
+def get_jta_applicaiton_list(zabbix_handler,HostID,keyword):
+        jta_applicaiton_list=[]
+        applicaitons = zabbix_handler.application.get(
+        {
+        'hostids':HostID,
+        #'filter': { 'name': keyword}, 
+        'output': 'extend'
+        })
+        for item in applicaitons:
+             if keyword in item['name']:
+                #print item['host']
+                #print item['hostid']
+                jta_applicaiton_list.append(item['name'].strip('\n'))
+        jta_applicaiton_list = [s.encode('utf-8') for s in jta_applicaiton_list]
+        #print jta_applicaiton_list
+        logging.debug("######JTA applicaiton List##############")
+        logging.debug(jta_applicaiton_list)
+        return jta_applicaiton_list
+#####################End#############################
 
 
 
