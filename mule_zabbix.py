@@ -11,7 +11,7 @@ import sys
 import json
 import socket
 import logging
-import jmp_constants
+import constants
 from zabbix_api import ZabbixAPI, ZabbixAPIException
 
 #####################################################
@@ -115,7 +115,7 @@ def z_logging():
         status = None
         zabbix_info = {}
         zagent_info = {}
-        zabbix_info = jmp_info('jmp.properties')
+        zabbix_info = jmp_info('mule_zabbix.properties')
         #print zabbix_info
         logging.debug(zabbix_info)
         zagent_info = z_info(zabbix_info['jsb_z_agent_conf'])

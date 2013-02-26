@@ -1,0 +1,46 @@
+#/bin/sh
+#Zabbix Java agent start/stop script.
+
+#Check for Java
+#export PATH=$PATH:/apps/java/jdk-1.6/bin/
+
+# zabbix details
+ZABBIX_JAVAGW_START=/usr/local/sbin/zabbix_java/startup.sh
+ZABBIX_JAVAGW_STOP=/usr/local/sbin/zabbix_java/shutdown.sh
+PID=/tmp/zabbix_java.pid
+
+test -f $ZABBIX_JAVAGW_START || exit 0 
+
+#[ -x $ZABBIX_AGENTD ] || exit 5
+
+RETVAL=0
+
+case "$1" in
+start)
+echo -n "Starting zabbix java gateway: "
+	$ZABBIX_JAVAGW_START
+	
+RETVAL=$?
+echo
+[ $RETVAL -eq 0 ] && touch /var/lock/subsys/zabbix-java
+;;
+stop)
+echo -n "Shutting down zabbix agent: "
+	$ZABBIX_JAVAGW_STOP
+
+RETVAL=$?
+echo
+[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/zabbix-java
+;;
+restart|reload)
+$0 stop
+$0 start
+RETVAL=$?
+;;
+*)
+echo "Usage: $0 {start|stop|restart|reload}"
+exit 1
+;;
+esac
+
+exit $RETVAL 

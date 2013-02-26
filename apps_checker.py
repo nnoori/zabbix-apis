@@ -33,7 +33,7 @@ def get_apps_list(jasper_home_dir):
 def update_apps_list(current_apps_list):
 		app_list = []
 		#Path for the Mule App's folder 
-		app_list_file = open('jta_list.txt','w')
+		app_list_file = open('apps_list.txt','w')
 		#clear the jta's list to accomedate the latest
 		app_list_file.truncate()
 		for item in current_apps_list:
@@ -58,7 +58,7 @@ def get_apps_diff():
 		deleted_apps = []
 		dir_app_list = []
 		current_app_list = []
-		f = open("jta_list.txt")
+		f = open("apps_list.txt")
 		#Load the JTA's list from JTA_List file to check if new apps were deployed or undeployed
 		apps_list = f.readlines()
 		for item in  apps_list:

@@ -12,8 +12,8 @@ import json
 import socket
 import jmp_constants
 from zabbix_api import ZabbixAPI, ZabbixAPIException
-import jmp_zabbix
-import jta_checker
+import mule_zabbix
+import apps_checker
 #####################################################
 #####################################################
 #Set the log level and set the file for the auto-discovery
@@ -23,13 +23,13 @@ logging.debug('Auto-discovery started running')
 #####################################################
 #####################################################
 
-zabbix_info = jmp_zabbix.jmp_info('jmp.properties')
+zabbix_info = mule_zabbix.jmp_info('jmp.properties')
 #####################################################
 # Jasper HostGroup for 1.1 MGMT Platform
 #####################################################
 hostgroup='JasperServers'
 
-z = jmp_zabbix.z_logging()
+z = mule_zabbix.z_logging()
 if z.test_login():
     #print 'Auth is working'
     logging.debug('authorized and gained access to zabbix')
@@ -40,16 +40,16 @@ else:
 #####################################################
 # Get GroupID and check for JTA hosts
 #####################################################
-jasper_groupid = jmp_zabbix.get_jasper_groupid(z,hostgroup)
-jta_list_hosts = jmp_zabbix.get_jasperhosts(z,jasper_groupid)
+jasper_groupid = mule_zabbix.get_jasper_groupid(z,hostgroup)
+jta_list_hosts = mule_zabbix.get_jasperhosts(z,jasper_groupid)
 #print '###################JTA-HostList########################'
 #print jta_list_hosts
 logging.debug('###################JTA-HostList########################')
 logging.debug(jta_list_hosts)       
 
-jta_templateID = jmp_zabbix.get_jta_templateid(z,"JTA JMX Template")
-deployed_jta_list = jta_checker.get_apps_diff()
-host_interface = jmp_zabbix.get_hostinterface(z,jasper_groupid)
+jta_templateID = mule_zabbix.get_jta_templateid(z,"JTA JMX Template")
+deployed_jta_list = apps_checker.get_apps_diff()
+host_interface = mule_zabbix.get_hostinterface(z,jasper_groupid)
 
 #print '###################Deployed_JTA_apps########################'
 #print deployed_jta_list['deployed_apps']
@@ -96,7 +96,7 @@ else:
             # Add log items and the screens to display
             # Get host id
             #####################################################
-            information = jmp_zabbix.z_info(jmp_zabbix.jmp_info('jmp.properties')['jsb_z_agent_conf'])
+            information = mule_zabbix.z_info(mule_zabbix.jmp_info('mule_zabbix.properties')['jsb_z_agent_conf'])
             host_log = z.host.get(
             {
             'filter': { 'host': information['Hostname']},
@@ -119,7 +119,7 @@ else:
             logging.debug("######applicaiton id##############")
             logging.debug(JTA_log_applicaitonID)
             logging.debug(JTA_log_applicaitonID[0]['applicationid'])
-            log_interfaceID = jmp_zabbix.get_interface(z,host_log[0]['hostid'])
+            log_interfaceID = mule_zabbix.get_interface(z,host_log[0]['hostid'])
             print log_interfaceID[0]['interfaceid']
             #####################################################
             #Add log item to JTA_log applicaiotn in jasperServer-a
