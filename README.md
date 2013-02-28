@@ -4,6 +4,7 @@ Zabbix for Mule ESB
 Python scripts that help adding Mule ESB applications automatically to Zabbix 2.0.4
 
 The scripts work very simple, 
+ 
 1. Mule Apps checker (apps_checker.py) checks for nay deployed Mule applications in Mule/apps folder
 
 2. mule_zabbix.py has different routines that will add hosts, applications and items. Get interfaces, HostIDs, GroupID etc
